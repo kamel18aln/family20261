@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>قائمة تسوق العائلة | Family Shopping List</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #faf7f2;
+  --bg2: #f0ebe0;
+  --bg3: #e8e0d0;
+  --surface: #ffffff;
+  --surface2: #fdf9f4;
+  --text: #2d2a24;
+  --text2: #6b6358;
+  --text3: #9c9286;
+  --accent: #4a7c59;
+  --accent2: #5d9970;
+  --accent-light: #d4edda;
+  --orange: #e07b39;
+  --orange-light: #fde8d8;
+  --red: #c0392b;
+  --red-light: #fde8e6;
+  --border: #ddd5c8;
+  --shadow: rgba(0,0,0,0.08);
+  --shadow2: rgba(0,0,0,0.15);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --font: 'Tajawal', sans-serif;
+}
+[data-theme="dark"] {
+  --bg: #1a1814;
+  --bg2: #211f1b;
+  --bg3: #2a2720;
+  --surface: #2d2a24;
+  --surface2: #332f28;
+  --text: #f0ebe0;
+  --text2: #b8b0a0;
+  --text3: #7a7060;
+  --accent: #5d9970;
+  --accent2: #4a7c59;
+  --accent-light: #1a3025;
+  --orange: #e07b39;
+  --orange-light: #2d1f10;
+  --red: #e05252;
+  --red-light: #2d1515;
+  --border: #3d3830;
+  --shadow: rgba(0,0,0,0.3);
+  --shadow2: rgba(0,0,0,0.5);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  transition: background 0.3s, color 0.3s;
+}
+[dir="ltr"] { font-family: 'Playfair Display', var(--font); }
+[dir="ltr"] body, [dir="ltr"] * { font-family: var(--font); }
+
+/* LOADER */
+#loader {
+  position: fixed; inset: 0;
+  background: var(--bg);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  z-index: 9999;
+  transition: opacity 0.5s;
+}
+.loader-icon {
+  font-size: 3rem;
+  animation: bounce 0.8s infinite alternate;
+}
+.loader-bar {
+  width: 200px; height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin-top: 20px;
+  overflow: hidden;
+}
+.loader-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--orange));
+  border-radius: 2px;
+  animation: load 1.2s ease-out forwards;
+}
+@keyframes load { from{width:0} to{width:100%} }
+@keyframes bounce { from{transform:translateY(0)} to{transform:translateY(-10px)} }
+
+/* LOGIN */
+#login-screen {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, var(--bg) 0%, var(--bg2) 50%, var(--bg3) 100%);
+  padding: 20px;
+}
+.login-card {
+  background: var(--surface);
+  border-radius: 24px;
+  padding: 50px 40px;
+  width: 100%; max-width: 420px;
+  box-shadow: 0 20px 60px var(--shadow2);
+  border: 1px solid var(--border);
+  text-align: center;
+  animation: fadeUp 0.6s ease;
+}
+.login-house {
+  font-size: 4rem;
+  display: block;
+  margin-bottom: 20px;
+  filter: drop-shadow(0 4px 8px rgba(74,124,89,0.3));
+}
+.login-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+.login-sub {
+  color: var(--text2);
+  font-size: 0.95rem;
+  margin-bottom: 30px;
+}
+.input-wrap {
+  position: relative;
+  margin-bottom: 20px;
+}
+.input-wrap input {
+  width: 100%;
+  padding: 16px 20px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg2);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+  text-align: center;
+  letter-spacing: 3px;
+}
+.input-wrap input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(74,124,89,0.15);
+}
+.login-btn {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 15px rgba(74,124,89,0.4);
+}
+.login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(74,124,89,0.5); }
+.login-btn:active { transform: translateY(0); }
+.error-msg {
+  color: var(--red);
+  font-size: 0.9rem;
+  margin-top: 12px;
+  display: none;
+  animation: shake 0.4s ease;
+}
+@keyframes shake {
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-8px)}
+  40%{transform:translateX(8px)}
+  60%{transform:translateX(-5px)}
+  80%{transform:translateX(5px)}
+}
+.shake { animation: shake 0.4s ease !important; }
+
+/* APP */
+#app { display: none; }
+
+/* TOP BAR */
+.topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 10px var(--shadow);
+}
+.topbar-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 1.1rem; font-weight: 800; color: var(--accent);
+}
+.topbar-actions {
+  display: flex; align-items: center; gap: 8px;
+}
+.icon-btn {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: 0.85rem;
+  color: var(--text);
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 6px;
+}
+.icon-btn:hover { background: var(--accent); color: white; border-color: var(--accent); transform: translateY(-1px); }
+
+/* TABS */
+.tabs {
+  display: flex;
+  background: var(--surface);
+  padding: 10px 20px 0;
+  border-bottom: 1px solid var(--border);
+  gap: 4px;
+  overflow-x: auto;
+}
+.tab-btn {
+  padding: 12px 20px;
+  border: none;
+  background: transparent;
+  color: var(--text2);
+  font-family: var(--font);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.tab-btn:hover { color: var(--accent); background: var(--bg2); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); background: var(--bg2); }
+
+/* MAIN */
+.main { padding: 20px; max-width: 900px; margin: 0 auto; }
+.tab-content { display: none; animation: fadeUp 0.3s ease; }
+.tab-content.active { display: block; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+/* STATS */
+.stats-row {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 12px; margin-bottom: 20px;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  text-align: center;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+.stat-num { font-size: 2rem; font-weight: 800; color: var(--accent); }
+.stat-label { color: var(--text2); font-size: 0.85rem; margin-top: 4px; }
+
+/* ADD FORM */
+.form-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+.form-title {
+  font-size: 1.1rem; font-weight: 700;
+  color: var(--accent); margin-bottom: 18px;
+  display: flex; align-items: center; gap: 8px;
+}
+.form-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group.full { grid-column: 1/-1; }
+.form-group label { font-size: 0.85rem; font-weight: 600; color: var(--text2); }
+.form-group input, .form-group select, .form-group textarea {
+  padding: 12px 14px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg2);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+  outline: none;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(74,124,89,0.12);
+}
+.form-group textarea { resize: vertical; min-height: 70px; }
+.priority-row { display: flex; gap: 10px; }
+.priority-btn {
+  flex: 1; padding: 10px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg2);
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  text-align: center;
+}
+.priority-btn.urgent { color: var(--red); }
+.priority-btn.normal { color: var(--accent); }
+.priority-btn.urgent.active { background: var(--red-light); border-color: var(--red); }
+.priority-btn.normal.active { background: var(--accent-light); border-color: var(--accent); }
+.priority-btn:hover { transform: translateY(-1px); }
+.add-btn {
+  width: 100%; padding: 14px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: white; border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 1rem; font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 8px;
+  box-shadow: 0 4px 12px rgba(74,124,89,0.3);
+}
+.add-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(74,124,89,0.4); }
+
+/* SEARCH / FILTER */
+.filter-row {
+  display: flex; gap: 10px; margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+.filter-row input, .filter-row select {
+  padding: 10px 14px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+  flex: 1; min-width: 130px;
+}
+.filter-row input:focus, .filter-row select:focus { border-color: var(--accent); }
+
+/* ITEMS LIST */
+.items-list { display: flex; flex-direction: column; gap: 10px; }
+.item-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  display: flex; align-items: flex-start; gap: 14px;
+  box-shadow: 0 2px 8px var(--shadow);
+  transition: all 0.3s;
+  animation: itemIn 0.4s ease both;
+  cursor: pointer;
+}
+@keyframes itemIn {
+  from{opacity:0;transform:translateX(20px)}
+  to{opacity:1;transform:translateX(0)}
+}
+[dir="ltr"] .item-card { animation-name: itemInLtr; }
+@keyframes itemInLtr {
+  from{opacity:0;transform:translateX(-20px)}
+  to{opacity:1;transform:translateX(0)}
+}
+.item-card:hover { box-shadow: 0 6px 20px var(--shadow2); transform: translateY(-2px); }
+.item-card.bought {
+  opacity: 0.7;
+  background: var(--accent-light);
+}
+.item-card.bought .item-name {
+  text-decoration: line-through;
+  color: var(--accent);
+}
+.item-check {
+  width: 26px; height: 26px;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 2px;
+  transition: all 0.2s;
+  font-size: 0.8rem;
+}
+.item-card.bought .item-check {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+.item-body { flex: 1; min-width: 0; }
+.item-name { font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
+.item-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.tag {
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 0.75rem; font-weight: 600;
+}
+.tag-urgent { background: var(--red-light); color: var(--red); }
+.tag-normal { background: var(--accent-light); color: var(--accent); }
+.tag-store { background: var(--orange-light); color: var(--orange); }
+.tag-cat { background: var(--bg3); color: var(--text2); }
+.tag-person { background: var(--bg3); color: var(--text2); }
+.item-note { color: var(--text2); font-size: 0.85rem; margin-top: 5px; font-style: italic; }
+.item-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.item-action-btn {
+  width: 32px; height: 32px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg2);
+  cursor: pointer;
+  font-size: 0.8rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+  color: var(--text2);
+}
+.item-action-btn:hover { background: var(--red-light); border-color: var(--red); color: var(--red); }
+.item-action-btn.edit:hover { background: var(--orange-light); border-color: var(--orange); color: var(--orange); }
+.qty-badge {
+  background: var(--accent);
+  color: white;
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+/* EMPTY STATE */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text3);
+}
+.empty-icon { font-size: 3rem; margin-bottom: 12px; }
+.empty-text { font-size: 1rem; }
+
+/* SHOPPING LIST TAB */
+.store-section { margin-bottom: 28px; }
+.store-header {
+  background: linear-gradient(135deg, var(--surface), var(--bg2));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  display: flex; align-items: center; justify-content: space-between;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+.store-name { font-size: 1.1rem; font-weight: 800; color: var(--accent); }
+.store-count { color: var(--text2); font-size: 0.85rem; }
+.shop-actions {
+  display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;
+}
+.shop-btn {
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 0.9rem; font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 6px;
+}
+.shop-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
+.shop-btn.print:hover { background: var(--orange); border-color: var(--orange); }
+.progress-bar {
+  background: var(--border);
+  border-radius: 4px;
+  height: 8px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+/* SETTINGS */
+.settings-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+.settings-title { font-size: 1rem; font-weight: 700; color: var(--accent); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.members-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.member-tag {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 0.9rem;
+  display: flex; align-items: center; gap: 8px;
+}
+.member-remove {
+  background: none; border: none;
+  color: var(--text3); cursor: pointer;
+  font-size: 0.8rem; padding: 2px;
+  transition: color 0.2s;
+}
+.member-remove:hover { color: var(--red); }
+.add-member-row { display: flex; gap: 8px; }
+.add-member-row input {
+  flex: 1; padding: 10px 14px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg2); color: var(--text);
+  font-family: var(--font); font-size: 0.9rem; outline: none;
+  transition: border-color 0.2s;
+}
+.add-member-row input:focus { border-color: var(--accent); }
+.add-member-btn {
+  padding: 10px 18px;
+  background: var(--accent); color: white;
+  border: none; border-radius: var(--radius-sm);
+  cursor: pointer; font-family: var(--font);
+  font-size: 0.9rem; font-weight: 700;
+  transition: all 0.2s;
+}
+.add-member-btn:hover { background: var(--accent2); transform: translateY(-1px); }
+.pwd-form { display: flex; flex-direction: column; gap: 12px; }
+
+/* TOAST */
+#toast-container {
+  position: fixed; bottom: 24px;
+  inset-inline-end: 24px;
+  display: flex; flex-direction: column; gap: 8px;
+  z-index: 9999; pointer-events: none;
+}
+.toast {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 20px;
+  box-shadow: 0 8px 24px var(--shadow2);
+  font-size: 0.9rem; font-weight: 600;
+  display: flex; align-items: center; gap: 10px;
+  animation: toastIn 0.3s ease, toastOut 0.3s ease 2.5s forwards;
+  pointer-events: auto;
+  border-inline-start: 4px solid var(--accent);
+  min-width: 240px;
+}
+.toast.error { border-inline-start-color: var(--red); }
+@keyframes toastIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes toastOut { from{opacity:1} to{opacity:0;transform:translateY(10px)} }
+
+/* CONFETTI */
+#confetti-canvas {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 9998;
+}
+
+/* MODAL */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: none; align-items: center; justify-content: center;
+  z-index: 1000; padding: 20px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 30px;
+  width: 100%; max-width: 500px;
+  box-shadow: 0 20px 60px var(--shadow2);
+  animation: fadeUp 0.3s ease;
+}
+.modal-title { font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom: 20px; }
+.modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+.btn-cancel {
+  flex: 1; padding: 12px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg2); color: var(--text);
+  font-family: var(--font); font-size: 0.95rem; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-cancel:hover { background: var(--bg3); }
+.btn-save {
+  flex: 1; padding: 12px;
+  background: var(--accent); color: white;
+  border: none; border-radius: var(--radius-sm);
+  font-family: var(--font); font-size: 0.95rem; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-save:hover { background: var(--accent2); }
+
+/* PRINT */
+@media print {
+  .topbar, .tabs, .filter-row, .shop-actions, .item-actions,
+  .form-card, #toast-container, #confetti-canvas,
+  .tab-content:not(.active) { display: none !important; }
+  body { background: white; color: black; }
+  .store-header { background: #f5f5f5 !important; }
+}
+@media (max-width: 600px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .stats-row { grid-template-columns: 1fr 1fr 1fr; }
+  .topbar-logo span:last-child { display: none; }
+  .icon-btn span { display: none; }
+  .main { padding: 12px; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+<div id="toast-container"></div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-icon">🛒</div>
+  <p style="color:var(--text2);margin-top:12px;font-size:0.95rem" id="loader-text">جاري التحميل...</p>
+  <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+</div>
+
+<!-- LOGIN -->
+<div id="login-screen" style="display:none">
+  <div class="login-card">
+    <span class="login-house">🏠</span>
+    <div class="login-title" id="lt">قائمة عائلتنا</div>
+    <div class="login-sub" id="ls">أدخل كلمة المرور للدخول</div>
+    <div class="input-wrap">
+      <input type="password" id="pwd-input" placeholder="••••••••" id="pi" autocomplete="current-password">
+    </div>
+    <button class="login-btn" onclick="tryLogin()" id="lb">دخول 🏠</button>
+    <div class="error-msg" id="login-error">❌ كلمة المرور غلط، حاول مرة ثانية</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="topbar">
+    <div class="topbar-logo">
+      <span>🏠</span>
+      <span id="app-title">قائمة العائلة</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="icon-btn" onclick="toggleLang()" id="lang-btn">🌐 <span>English</span></button>
+      <button class="icon-btn" onclick="toggleTheme()" id="theme-btn">🌙 <span id="theme-label">داكن</span></button>
+      <button class="icon-btn" onclick="logout()">🚪 <span id="logout-label">خروج</span></button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('items')" id="tab-items">📋 الأغراض</button>
+    <button class="tab-btn" onclick="switchTab('shopping')" id="tab-shopping">🛒 قائمة التسوق</button>
+    <button class="tab-btn" onclick="switchTab('settings')" id="tab-settings">⚙️ الإعدادات</button>
+  </div>
+
+  <div class="main">
+    <!-- ITEMS TAB -->
+    <div class="tab-content active" id="tab-items-content">
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-num" id="stat-total">0</div>
+          <div class="stat-label" id="sl-total">كلي</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="stat-bought" style="color:var(--accent)">0</div>
+          <div class="stat-label" id="sl-bought">مشتراة</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="stat-remain" style="color:var(--orange)">0</div>
+          <div class="stat-label" id="sl-remain">باقية</div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="form-title">➕ <span id="ft-add">إضافة غرض جديد</span></div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label id="fl-name">اسم الغرض</label>
+            <input type="text" id="f-name" placeholder="مثال: حليب، صابون...">
+          </div>
+          <div class="form-group">
+            <label id="fl-qty">الكمية</label>
+            <input type="number" id="f-qty" placeholder="1" min="1" value="1">
+          </div>
+          <div class="form-group">
+            <label id="fl-cat">الفئة</label>
+            <select id="f-cat">
+              <option value="مطبخ">🍳 مطبخ</option>
+              <option value="حمام">🚿 حمام</option>
+              <option value="نظافة">🧹 نظافة</option>
+              <option value="غرفة نوم">🛏️ غرفة نوم</option>
+              <option value="أخرى">📦 أخرى</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label id="fl-store">المتجر</label>
+            <select id="f-store"></select>
+          </div>
+          <div class="form-group">
+            <label id="fl-person">الطالب</label>
+            <select id="f-person"></select>
+          </div>
+          <div class="form-group">
+            <label id="fl-priority">الأولوية</label>
+            <div class="priority-row">
+              <button class="priority-btn urgent" onclick="setPriority('urgent')" id="pb-urgent">🔴 عاجل</button>
+              <button class="priority-btn normal active" onclick="setPriority('normal')" id="pb-normal">🟢 عادي</button>
+            </div>
+          </div>
+          <div class="form-group full">
+            <label id="fl-note">ملاحظة</label>
+            <textarea id="f-note" placeholder="أي تفاصيل إضافية..."></textarea>
+          </div>
+        </div>
+        <button class="add-btn" onclick="addItem()" id="add-btn-label">➕ إضافة للقائمة</button>
+      </div>
+
+      <div class="filter-row">
+        <input type="text" id="search-input" placeholder="🔍 بحث..." oninput="renderItems()">
+        <select id="filter-cat" onchange="renderItems()">
+          <option value="" id="fc-all">الكل</option>
+          <option value="مطبخ">🍳 مطبخ</option>
+          <option value="حمام">🚿 حمام</option>
+          <option value="نظافة">🧹 نظافة</option>
+          <option value="غرفة نوم">🛏️ غرفة نوم</option>
+          <option value="أخرى">📦 أخرى</option>
+        </select>
+        <select id="filter-store" onchange="renderItems()">
+          <option value="" id="fs-all">كل المتاجر</option>
+        </select>
+        <select id="filter-priority" onchange="renderItems()">
+          <option value="" id="fp-all">كل الأولويات</option>
+          <option value="urgent" id="fp-urgent">🔴 عاجل</option>
+          <option value="normal" id="fp-normal">🟢 عادي</option>
+        </select>
+      </div>
+
+      <div class="items-list" id="items-list"></div>
+    </div>
+
+    <!-- SHOPPING TAB -->
+    <div class="tab-content" id="tab-shopping-content">
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="shop-actions">
+        <button class="shop-btn print" onclick="printList()">🖨️ <span id="print-label">طباعة</span></button>
+        <button class="shop-btn" onclick="clearBought()">🗑️ <span id="clear-label">مسح المشتراة</span></button>
+      </div>
+      <div id="shopping-list-content"></div>
+    </div>
+
+    <!-- SETTINGS TAB -->
+    <div class="tab-content" id="tab-settings-content">
+      <div class="settings-section">
+        <div class="settings-title">👨‍👩‍👧‍👦 <span id="st-members">أفراد العائلة</span></div>
+        <div class="members-list" id="members-list"></div>
+        <div class="add-member-row">
+          <input type="text" id="new-member" placeholder="اسم الفرد الجديد...">
+          <button class="add-member-btn" onclick="addMember()">➕</button>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-title">🏪 <span id="st-stores">المتاجر</span></div>
+        <div class="members-list" id="stores-list"></div>
+        <div class="add-member-row">
+          <input type="text" id="new-store-emoji" placeholder="🏪" style="width:60px;flex:none">
+          <input type="text" id="new-store-name" placeholder="اسم المتجر...">
+          <button class="add-member-btn" onclick="addStore()">➕</button>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-title">🔐 <span id="st-pwd">تغيير كلمة المرور</span></div>
+        <div class="pwd-form">
+          <input type="password" id="new-pwd" placeholder="كلمة المرور الجديدة..." class="form-group input" style="padding:12px 14px;border:2px solid var(--border);border-radius:var(--radius-sm);background:var(--bg2);color:var(--text);font-family:var(--font);font-size:0.95rem;outline:none;width:100%">
+          <input type="password" id="confirm-pwd" placeholder="تأكيد كلمة المرور..." style="padding:12px 14px;border:2px solid var(--border);border-radius:var(--radius-sm);background:var(--bg2);color:var(--text);font-family:var(--font);font-size:0.95rem;outline:none;width:100%">
+          <button class="add-btn" onclick="changePassword()" style="margin-top:0">💾 <span id="save-pwd-label">حفظ كلمة المرور</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal">
+    <div class="modal-title" id="edit-title">✏️ تعديل الغرض</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label id="el-name">اسم الغرض</label>
+        <input type="text" id="e-name">
+      </div>
+      <div class="form-group">
+        <label id="el-qty">الكمية</label>
+        <input type="number" id="e-qty" min="1">
+      </div>
+      <div class="form-group">
+        <label id="el-cat">الفئة</label>
+        <select id="e-cat">
+          <option value="مطبخ">🍳 مطبخ</option>
+          <option value="حمام">🚿 حمام</option>
+          <option value="نظافة">🧹 نظافة</option>
+          <option value="غرفة نوم">🛏️ غرفة نوم</option>
+          <option value="أخرى">📦 أخرى</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label id="el-store">المتجر</label>
+        <select id="e-store"></select>
+      </div>
+      <div class="form-group">
+        <label id="el-person">الطالب</label>
+        <select id="e-person"></select>
+      </div>
+      <div class="form-group">
+        <label id="el-priority">الأولوية</label>
+        <select id="e-priority">
+          <option value="urgent">🔴 عاجل</option>
+          <option value="normal">🟢 عادي</option>
+        </select>
+      </div>
+      <div class="form-group full">
+        <label id="el-note">ملاحظة</label>
+        <textarea id="e-note"></textarea>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()" id="btn-cancel">إلغاء</button>
+      <button class="btn-save" onclick="saveEdit()" id="btn-save">💾 حفظ</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== STATE =====
+let lang = localStorage.getItem('lang') || 'ar';
+let theme = localStorage.getItem('theme') || 'light';
+let currentPriority = 'normal';
+let editId = null;
+let items = JSON.parse(localStorage.getItem('items') || '[]');
+let members = JSON.parse(localStorage.getItem('members') || '["أبو العيلة/Dad","أم العيلة/Mom","الأولاد/Kids"]');
+let stores = JSON.parse(localStorage.getItem('stores') || '[{"emoji":"🛒","name":"كوسكو"},{"emoji":"🏪","name":"سوبر ستور"},{"emoji":"📦","name":"أخرى"}]');
+
+const DEFAULT_PASS = 'family2024';
+let password = localStorage.getItem('app-password') || DEFAULT_PASS;
+
+// ===== TRANSLATIONS =====
+const T = {
+  ar: {
+    appTitle:'قائمة العائلة', langBtn:'English', themeLight:'فاتح', themeDark:'داكن',
+    logout:'خروج', tabItems:'📋 الأغراض', tabShop:'🛒 قائمة التسوق', tabSettings:'⚙️ الإعدادات',
+    statTotal:'كلي', statBought:'مشتراة', statRemain:'باقية',
+    addTitle:'إضافة غرض جديد', flName:'اسم الغرض', flQty:'الكمية', flCat:'الفئة',
+    flStore:'المتجر', flPerson:'الطالب', flPriority:'الأولوية', flNote:'ملاحظة',
+    addBtn:'➕ إضافة للقائمة', urgentBtn:'🔴 عاجل', normalBtn:'🟢 عادي',
+    filterAll:'الكل', filterAllStores:'كل المتاجر', filterAllPriority:'كل الأولويات',
+    filterUrgent:'🔴 عاجل', filterNormal:'🟢 عادي', searchPH:'🔍 بحث...',
+    namePH:'مثال: حليب، صابون...', qtyPH:'1', notePH:'أي تفاصيل إضافية...',
+    printBtn:'🖨️ طباعة', clearBtn:'🗑️ مسح المشتراة',
+    stMembers:'أفراد العائلة', stStores:'المتاجر', stPwd:'تغيير كلمة المرور',
+    savePwd:'💾 حفظ كلمة المرور', newMemberPH:'اسم الفرد الجديد...',
+    editTitle:'✏️ تعديل الغرض', cancelBtn:'إلغاء', saveBtn:'💾 حفظ',
+    loginTitle:'قائمة عائلتنا', loginSub:'أدخل كلمة المرور للدخول', loginBtn:'دخول 🏠',
+    loginError:'❌ كلمة المرور غلط، حاول مرة ثانية',
+    loaderText:'جاري التحميل...',
+    toastAdded:'✅ تم إضافة الغرض', toastDeleted:'🗑️ تم الحذف', toastBought:'✅ أحسنت! تم الشراء',
+    toastUnbought:'↩️ تم الإلغاء', toastUpdated:'✏️ تم التعديل', toastPwdChanged:'🔐 تم تغيير كلمة المرور',
+    toastPwdError:'❌ كلمات المرور غير متطابقة', toastNameReq:'⚠️ اسم الغرض مطلوب',
+    toastMemberAdded:'👤 تم إضافة الفرد', toastMemberDeleted:'🗑️ تم الحذف', 
+    toastStoreAdded:'🏪 تم إضافة المتجر', toastStoreDeleted:'🗑️ تم الحذف',
+    storeProgress:'التقدم', storeComplete:'🎉 اكتملت قائمة', noItems:'لا توجد أغراض بعد!',
+    noItemsSub:'أضف أول غرض لقائمتك', allBoughtMsg:'🎉 رائع! تم شراء كل أغراض',
+    catKitchen:'🍳 مطبخ', catBath:'🚿 حمام', catClean:'🧹 نظافة', catBed:'🛏️ غرفة نوم', catOther:'📦 أخرى',
+    emojis:{urgent:'🔴',normal:'🟢'},
+    qty:'الكمية:'
+  },
+  en: {
+    appTitle:'Family List', langBtn:'عربي', themeLight:'Light', themeDark:'Dark',
+    logout:'Logout', tabItems:'📋 Items', tabShop:'🛒 Shopping List', tabSettings:'⚙️ Settings',
+    statTotal:'Total', statBought:'Bought', statRemain:'Remaining',
+    addTitle:'Add New Item', flName:'Item Name', flQty:'Quantity', flCat:'Category',
+    flStore:'Store', flPerson:'Requested By', flPriority:'Priority', flNote:'Note',
+    addBtn:'➕ Add to List', urgentBtn:'🔴 Urgent', normalBtn:'🟢 Normal',
+    filterAll:'All', filterAllStores:'All Stores', filterAllPriority:'All Priorities',
+    filterUrgent:'🔴 Urgent', filterNormal:'🟢 Normal', searchPH:'🔍 Search...',
+    namePH:'e.g. Milk, Soap...', qtyPH:'1', notePH:'Any additional details...',
+    printBtn:'🖨️ Print', clearBtn:'🗑️ Clear Bought',
+    stMembers:'Family Members', stStores:'Stores', stPwd:'Change Password',
+    savePwd:'💾 Save Password', newMemberPH:'New member name...',
+    editTitle:'✏️ Edit Item', cancelBtn:'Cancel', saveBtn:'💾 Save',
+    loginTitle:'Our Family List', loginSub:'Enter password to continue', loginBtn:'Enter 🏠',
+    loginError:'❌ Wrong password, try again',
+    loaderText:'Loading...',
+    toastAdded:'✅ Item added', toastDeleted:'🗑️ Deleted', toastBought:'✅ Great! Marked as bought',
+    toastUnbought:'↩️ Unmarked', toastUpdated:'✏️ Updated', toastPwdChanged:'🔐 Password changed',
+    toastPwdError:'❌ Passwords do not match', toastNameReq:'⚠️ Item name is required',
+    toastMemberAdded:'👤 Member added', toastMemberDeleted:'🗑️ Deleted',
+    toastStoreAdded:'🏪 Store added', toastStoreDeleted:'🗑️ Deleted',
+    storeProgress:'Progress', storeComplete:'🎉 Store complete:', noItems:'No items yet!',
+    noItemsSub:'Add your first item to the list', allBoughtMsg:'🎉 All items bought for',
+    catKitchen:'🍳 Kitchen', catBath:'🚿 Bathroom', catClean:'🧹 Cleaning', catBed:'🛏️ Bedroom', catOther:'📦 Other',
+    emojis:{urgent:'🔴',normal:'🟢'},
+    qty:'Qty:'
+  }
+};
+function t(key){ return T[lang][key] || key; }
+
+// ===== DEFAULT DATA =====
+if(items.length === 0){
+  items = [
+    {id:Date.now()+1, name:'حليب كامل الدسم', qty:3, cat:'مطبخ', store:'كوسكو', person:'أبو العيلة/Dad', priority:'normal', note:'علبة كبيرة', bought:false},
+    {id:Date.now()+2, name:'صابون المطبخ', qty:2, cat:'نظافة', store:'سوبر ستور', person:'أم العيلة/Mom', priority:'urgent', note:'نفد تماماً', bought:false},
+    {id:Date.now()+3, name:'شامبو للأطفال', qty:1, cat:'حمام', store:'سوبر ستور', person:'الأولاد/Kids', priority:'normal', note:'', bought:false},
+    {id:Date.now()+4, name:'مناشف ورق', qty:4, cat:'نظافة', store:'كوسكو', person:'أم العيلة/Mom', priority:'normal', note:'باكيت كبير', bought:false},
+  ];
+  saveItems();
+}
+
+// ===== SAVE =====
+function saveItems(){ localStorage.setItem('items', JSON.stringify(items)); }
+function saveMembers(){ localStorage.setItem('members', JSON.stringify(members)); }
+function saveStores(){ localStorage.setItem('stores', JSON.stringify(stores)); }
+
+// ===== LOADER =====
+window.addEventListener('load', ()=>{
+  applyTheme(); applyLang();
+  setTimeout(()=>{
+    const loader = document.getElementById('loader');
+    loader.style.opacity = '0';
+    setTimeout(()=>{
+      loader.style.display = 'none';
+      if(localStorage.getItem('logged-in') === '1') showApp();
+      else showLogin();
+    }, 500);
+  }, 1200);
+});
+
+function showLogin(){
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  updateLoginTexts();
+}
+function showApp(){
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  populateSelects();
+  renderItems();
+  renderShopping();
+  renderSettings();
+  updateTexts();
+}
+
+// ===== AUTH =====
+function tryLogin(){
+  const val = document.getElementById('pwd-input').value;
+  if(val === password){
+    localStorage.setItem('logged-in','1');
+    document.getElementById('login-error').style.display = 'none';
+    showApp();
+  } else {
+    const err = document.getElementById('login-error');
+    err.style.display = 'block';
+    const card = document.querySelector('.login-card');
+    card.classList.remove('shake');
+    void card.offsetWidth;
+    card.classList.add('shake');
+    setTimeout(()=>card.classList.remove('shake'),400);
+  }
+}
+document.addEventListener('keydown', e=>{ if(e.key==='Enter' && document.getElementById('login-screen').style.display!=='none') tryLogin(); });
+function logout(){
+  localStorage.removeItem('logged-in');
+  document.getElementById('pwd-input').value = '';
+  showLogin();
+}
+
+// ===== TABS =====
+function switchTab(tab){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  document.getElementById('tab-'+tab+'-content').classList.add('active');
+  if(tab==='shopping') renderShopping();
+  if(tab==='settings') renderSettings();
+}
+
+// ===== THEME =====
+function toggleTheme(){
+  theme = theme==='light'?'dark':'light';
+  localStorage.setItem('theme', theme);
+  applyTheme();
+}
+function applyTheme(){
+  document.documentElement.setAttribute('data-theme', theme);
+  const btn = document.getElementById('theme-btn');
+  const lbl = document.getElementById('theme-label');
+  if(btn){ btn.innerHTML = theme==='dark' ? `☀️ <span id="theme-label">${t(lang==='ar'?'themeLight':'themeLight')}</span>` : `🌙 <span id="theme-label">${t('themeDark')}</span>`; }
+}
+
+// ===== LANG =====
+function toggleLang(){
+  lang = lang==='ar'?'en':'ar';
+  localStorage.setItem('lang', lang);
+  applyLang();
+  updateTexts();
+  updateLoginTexts();
+  renderItems();
+  renderShopping();
+  renderSettings();
+  populateSelects();
+}
+function applyLang(){
+  document.documentElement.setAttribute('lang', lang);
+  document.documentElement.setAttribute('dir', lang==='ar'?'rtl':'ltr');
+  const btn = document.getElementById('lang-btn');
+  if(btn) btn.innerHTML = `🌐 <span>${t('langBtn')}</span>`;
+}
+function updateLoginTexts(){
+  const lt=document.getElementById('lt'); if(lt) lt.textContent=t('loginTitle');
+  const ls=document.getElementById('ls'); if(ls) ls.textContent=t('loginSub');
+  const lb=document.getElementById('lb'); if(lb) lb.textContent=t('loginBtn');
+  const le=document.getElementById('login-error'); if(le) le.textContent=t('loginError');
+  const pi=document.getElementById('pwd-input'); if(pi) pi.placeholder='••••••••';
+  const lt2=document.getElementById('loader-text'); if(lt2) lt2.textContent=t('loaderText');
+}
+function updateTexts(){
+  const map = {
+    'app-title':'appTitle','logout-label':'logout','theme-label':theme==='dark'?'themeLight':'themeDark',
+    'tab-items':'tabItems','tab-shopping':'tabShop','tab-settings':'tabSettings',
+    'sl-total':'statTotal','sl-bought':'statBought','sl-remain':'statRemain',
+    'ft-add':'addTitle','fl-name':'flName','fl-qty':'flQty','fl-cat':'flCat',
+    'fl-store':'flStore','fl-person':'flPerson','fl-priority':'flPriority','fl-note':'flNote',
+    'add-btn-label':'addBtn','pb-urgent':'urgentBtn','pb-normal':'normalBtn',
+    'fc-all':'filterAll','fs-all':'filterAllStores','fp-all':'filterAllPriority',
+    'fp-urgent':'filterUrgent','fp-normal':'filterNormal',
+    'print-label':'printBtn','clear-label':'clearBtn',
+    'st-members':'stMembers','st-stores':'stStores','st-pwd':'stPwd','save-pwd-label':'savePwd',
+    'edit-title':'editTitle','btn-cancel':'cancelBtn','btn-save':'saveBtn',
+    'el-name':'flName','el-qty':'flQty','el-cat':'flCat','el-store':'flStore',
+    'el-person':'flPerson','el-priority':'flPriority','el-note':'flNote'
+  };
+  for(const [id,key] of Object.entries(map)){
+    const el = document.getElementById(id);
+    if(el) el.textContent = t(key);
+  }
+  const si = document.getElementById('search-input'); if(si) si.placeholder=t('searchPH');
+  const fn = document.getElementById('f-name'); if(fn) fn.placeholder=t('namePH');
+  const nm = document.getElementById('new-member'); if(nm) nm.placeholder=t('newMemberPH');
+  applyTheme();
+}
+
+// ===== SELECTS =====
+function populateSelects(){
+  ['f-store','e-store','filter-store'].forEach(id=>{
+    const sel = document.getElementById(id);
+    if(!sel) return;
+    const isFilter = id==='filter-store';
+    sel.innerHTML = isFilter ? `<option value="">${t('filterAllStores')}</option>` : '';
+    stores.forEach(s=>{
+      const o = document.createElement('option');
+      o.value = s.name;
+      o.textContent = s.emoji+' '+s.name;
+      sel.appendChild(o);
+    });
+  });
+  ['f-person','e-person'].forEach(id=>{
+    const sel = document.getElementById(id);
+    if(!sel) return;
+    sel.innerHTML = '';
+    members.forEach(m=>{
+      const o = document.createElement('option');
+      o.value = m; o.textContent = m;
+      sel.appendChild(o);
+    });
+  });
+  updateCatOptions();
+}
+function updateCatOptions(){
+  const cats = [
+    {v:'مطبخ', label:t('catKitchen')},{v:'حمام',label:t('catBath')},
+    {v:'نظافة',label:t('catClean')},{v:'غرفة نوم',label:t('catBed')},{v:'أخرى',label:t('catOther')}
+  ];
+  ['f-cat','e-cat','filter-cat'].forEach(id=>{
+    const sel = document.getElementById(id);
+    if(!sel) return;
+    const isFilter = id==='filter-cat';
+    const val = sel.value;
+    sel.innerHTML = isFilter ? `<option value="">${t('filterAll')}</option>` : '';
+    cats.forEach(c=>{
+      const o = document.createElement('option');
+      o.value = c.v; o.textContent = c.label;
+      sel.appendChild(o);
+    });
+    sel.value = val;
+  });
+}
+
+// ===== PRIORITY =====
+function setPriority(p){
+  currentPriority = p;
+  document.getElementById('pb-urgent').classList.toggle('active', p==='urgent');
+  document.getElementById('pb-normal').classList.toggle('active', p==='normal');
+}
+
+// ===== ADD ITEM =====
+function addItem(){
+  const name = document.getElementById('f-name').value.trim();
+  if(!name){ showToast(t('toastNameReq'),'error'); return; }
+  const item = {
+    id: Date.now(),
+    name, qty: parseInt(document.getElementById('f-qty').value)||1,
+    cat: document.getElementById('f-cat').value,
+    store: document.getElementById('f-store').value,
+    person: document.getElementById('f-person').value,
+    priority: currentPriority,
+    note: document.getElementById('f-note').value.trim(),
+    bought: false
+  };
+  items.unshift(item);
+  saveItems();
+  document.getElementById('f-name').value='';
+  document.getElementById('f-qty').value='1';
+  document.getElementById('f-note').value='';
+  setPriority('normal');
+  renderItems();
+  renderShopping();
+  showToast(t('toastAdded'));
+}
+
+// ===== TOGGLE BOUGHT =====
+function toggleBought(id){
+  const item = items.find(i=>i.id===id);
+  if(!item) return;
+  item.bought = !item.bought;
+  saveItems();
+  renderItems();
+  renderShopping();
+  if(item.bought){
+    showToast(t('toastBought'));
+    checkStoreComplete(item.store);
+  } else {
+    showToast(t('toastUnbought'));
+  }
+}
+function checkStoreComplete(storeName){
+  const storeItems = items.filter(i=>i.store===storeName);
+  if(storeItems.length > 0 && storeItems.every(i=>i.bought)){
+    setTimeout(()=>{
+      showToast(t('allBoughtMsg')+' '+storeName+' 🎉');
+      launchConfetti();
+    }, 300);
+  }
+}
+
+// ===== DELETE =====
+function deleteItem(id){
+  items = items.filter(i=>i.id!==id);
+  saveItems();
+  renderItems();
+  renderShopping();
+  showToast(t('toastDeleted'));
+}
+
+// ===== EDIT =====
+function openEdit(id){
+  editId = id;
+  const item = items.find(i=>i.id===id);
+  if(!item) return;
+  document.getElementById('e-name').value = item.name;
+  document.getElementById('e-qty').value = item.qty;
+  document.getElementById('e-cat').value = item.cat;
+  document.getElementById('e-store').value = item.store;
+  document.getElementById('e-person').value = item.person;
+  document.getElementById('e-priority').value = item.priority;
+  document.getElementById('e-note').value = item.note;
+  document.getElementById('edit-modal').classList.add('open');
+}
+function closeModal(){ document.getElementById('edit-modal').classList.remove('open'); editId=null; }
+function saveEdit(){
+  const item = items.find(i=>i.id===editId);
+  if(!item) return;
+  item.name = document.getElementById('e-name').value.trim();
+  item.qty = parseInt(document.getElementById('e-qty').value)||1;
+  item.cat = document.getElementById('e-cat').value;
+  item.store = document.getElementById('e-store').value;
+  item.person = document.getElementById('e-person').value;
+  item.priority = document.getElementById('e-priority').value;
+  item.note = document.getElementById('e-note').value.trim();
+  saveItems(); closeModal(); renderItems(); renderShopping();
+  showToast(t('toastUpdated'));
+}
+
+// ===== RENDER ITEMS =====
+function renderItems(){
+  updateStats();
+  const search = document.getElementById('search-input').value.toLowerCase();
+  const catF = document.getElementById('filter-cat').value;
+  const storeF = document.getElementById('filter-store').value;
+  const prioF = document.getElementById('filter-priority').value;
+  let filtered = items.filter(i=>{
+    if(search && !i.name.toLowerCase().includes(search) && !i.note.toLowerCase().includes(search)) return false;
+    if(catF && i.cat!==catF) return false;
+    if(storeF && i.store!==storeF) return false;
+    if(prioF && i.priority!==prioF) return false;
+    return true;
+  });
+  const list = document.getElementById('items-list');
+  if(filtered.length===0){
+    list.innerHTML = `<div class="empty-state"><div class="empty-icon">🛒</div><div class="empty-text">${t('noItems')}</div><div style="margin-top:8px;color:var(--text3);font-size:0.85rem">${t('noItemsSub')}</div></div>`;
+    return;
+  }
+  list.innerHTML = filtered.map((item,i)=>{
+    const store = stores.find(s=>s.name===item.store);
+    const se = store ? store.emoji : '📦';
+    return `<div class="item-card ${item.bought?'bought':''}" style="animation-delay:${i*0.05}s" onclick="toggleBought(${item.id})">
+      <div class="item-check">${item.bought?'✓':''}</div>
+      <div class="item-body">
+        <div class="item-name">${item.name} <span class="qty-badge">×${item.qty}</span></div>
+        ${item.note ? `<div class="item-note">${item.note}</div>` : ''}
+        <div class="item-meta">
+          <span class="tag tag-${item.priority}">${item.priority==='urgent'?'🔴 '+t('urgentBtn').replace('🔴 ',''):'🟢 '+t('normalBtn').replace('🟢 ','')}</span>
+          <span class="tag tag-store">${se} ${item.store}</span>
+          <span class="tag tag-cat">${item.cat}</span>
+          <span class="tag tag-person">👤 ${item.person}</span>
+        </div>
+      </div>
+      <div class="item-actions" onclick="event.stopPropagation()">
+        <button class="item-action-btn edit" onclick="openEdit(${item.id})">✏️</button>
+        <button class="item-action-btn" onclick="deleteItem(${item.id})">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function updateStats(){
+  const total = items.length;
+  const bought = items.filter(i=>i.bought).length;
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-bought').textContent = bought;
+  document.getElementById('stat-remain').textContent = total-bought;
+  const pf = document.getElementById('progress-fill');
+  if(pf) pf.style.width = total>0 ? (bought/total*100)+'%' : '0%';
+}
+
+// ===== RENDER SHOPPING =====
+function renderShopping(){
+  updateStats();
+  const container = document.getElementById('shopping-list-content');
+  if(!container) return;
+  const groups = {};
+  items.forEach(item=>{
+    if(!groups[item.store]) groups[item.store]=[];
+    groups[item.store].push(item);
+  });
+  if(Object.keys(groups).length===0){
+    container.innerHTML = `<div class="empty-state"><div class="empty-icon">🛒</div><div class="empty-text">${t('noItems')}</div></div>`;
+    return;
+  }
+  container.innerHTML = Object.entries(groups).map(([storeName, storeItems])=>{
+    const store = stores.find(s=>s.name===storeName);
+    const se = store ? store.emoji : '📦';
+    const boughtCount = storeItems.filter(i=>i.bought).length;
+    const allDone = boughtCount===storeItems.length;
+    return `<div class="store-section">
+      <div class="store-header">
+        <div class="store-name">${se} ${storeName}</div>
+        <div class="store-count">${boughtCount}/${storeItems.length} ${allDone?'🎉':''}</div>
+      </div>
+      ${storeItems.map(item=>`
+        <div class="item-card ${item.bought?'bought':''}" onclick="toggleBought(${item.id})" style="margin-bottom:8px">
+          <div class="item-check">${item.bought?'✓':''}</div>
+          <div class="item-body">
+            <div class="item-name">${item.name} <span class="qty-badge">×${item.qty}</span></div>
+            ${item.note?`<div class="item-note">${item.note}</div>`:''}
+            <div class="item-meta">
+              <span class="tag tag-${item.priority}">${item.priority==='urgent'?'🔴':'🟢'}</span>
+              <span class="tag tag-cat">${item.cat}</span>
+              <span class="tag tag-person">👤 ${item.person}</span>
+            </div>
+          </div>
+          <div class="item-actions" onclick="event.stopPropagation()">
+            <button class="item-action-btn" onclick="deleteItem(${item.id})">🗑️</button>
+          </div>
+        </div>`).join('')}
+    </div>`;
+  }).join('');
+}
+
+// ===== CLEAR BOUGHT =====
+function clearBought(){
+  const count = items.filter(i=>i.bought).length;
+  items = items.filter(i=>!i.bought);
+  saveItems();
+  renderItems();
+  renderShopping();
+  showToast(t('toastDeleted')+' ('+count+')');
+}
+
+// ===== PRINT =====
+function printList(){ window.print(); }
+
+// ===== SETTINGS =====
+function renderSettings(){
+  const ml = document.getElementById('members-list');
+  ml.innerHTML = members.map(m=>`
+    <div class="member-tag">
+      👤 ${m}
+      <button class="member-remove" onclick="removeMember('${m.replace(/'/g,"\\'")}')">✕</button>
+    </div>`).join('');
+  const sl = document.getElementById('stores-list');
+  sl.innerHTML = stores.map(s=>`
+    <div class="member-tag">
+      ${s.emoji} ${s.name}
+      <button class="member-remove" onclick="removeStore('${s.name.replace(/'/g,"\\'")}')">✕</button>
+    </div>`).join('');
+}
+function addMember(){
+  const input = document.getElementById('new-member');
+  const val = input.value.trim();
+  if(!val) return;
+  members.push(val);
+  saveMembers();
+  input.value='';
+  renderSettings();
+  populateSelects();
+  showToast(t('toastMemberAdded'));
+}
+function removeMember(name){
+  members = members.filter(m=>m!==name);
+  saveMembers();
+  renderSettings();
+  populateSelects();
+  showToast(t('toastMemberDeleted'));
+}
+function addStore(){
+  const emoji = document.getElementById('new-store-emoji').value.trim() || '🏪';
+  const name = document.getElementById('new-store-name').value.trim();
+  if(!name) return;
+  stores.push({emoji, name});
+  saveStores();
+  document.getElementById('new-store-emoji').value='';
+  document.getElementById('new-store-name').value='';
+  renderSettings();
+  populateSelects();
+  showToast(t('toastStoreAdded'));
+}
+function removeStore(name){
+  stores = stores.filter(s=>s.name!==name);
+  saveStores();
+  renderSettings();
+  populateSelects();
+  showToast(t('toastStoreDeleted'));
+}
+function changePassword(){
+  const np = document.getElementById('new-pwd').value;
+  const cp = document.getElementById('confirm-pwd').value;
+  if(np!==cp){ showToast(t('toastPwdError'),'error'); return; }
+  if(!np){ return; }
+  password = np;
+  localStorage.setItem('app-password', password);
+  document.getElementById('new-pwd').value='';
+  document.getElementById('confirm-pwd').value='';
+  showToast(t('toastPwdChanged'));
+}
+
+// ===== TOAST =====
+function showToast(msg, type='success'){
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = 'toast'+(type==='error'?' error':'');
+  toast.innerHTML = msg;
+  container.appendChild(toast);
+  setTimeout(()=>toast.remove(), 3000);
+}
+
+// ===== CONFETTI =====
+function launchConfetti(){
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const pieces = Array.from({length:120},()=>({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height - canvas.height,
+    size: Math.random()*8+4,
+    color: ['#4a7c59','#e07b39','#f7d96e','#6baed6','#e05252','#9370db'][Math.floor(Math.random()*6)],
+    speed: Math.random()*4+2,
+    angle: Math.random()*Math.PI*2,
+    spin: (Math.random()-0.5)*0.2,
+    drift: (Math.random()-0.5)*2
+  }));
+  let frame = 0;
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p=>{
+      ctx.save();
+      ctx.translate(p.x,p.y);
+      ctx.rotate(p.angle);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size);
+      ctx.restore();
+      p.y += p.speed;
+      p.x += p.drift;
+      p.angle += p.spin;
+    });
+    frame++;
+    if(frame<180) requestAnimationFrame(draw);
+    else ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+  draw();
+}
+
+// ===== CLOSE MODAL ON OVERLAY CLICK =====
+document.getElementById('edit-modal').addEventListener('click', function(e){ if(e.target===this) closeModal(); });
+</script>
+</body>
+</html>
